@@ -1,242 +1,189 @@
-# Scraper Berita Online Indonesia
+# 📰 Scraper Berita Online Indonesia
 
-Aplikasi Python untuk mengumpulkan dan menganalisis artikel berita dari berbagai portal berita online Indonesia berdasarkan keyword tertentu dan periode waktu yang ditentukan.
+Aplikasi Python untuk mengumpulkan artikel berita dari berbagai portal berita online Indonesia berdasarkan **keyword** dan **rentang tanggal**, lalu menyimpan hasilnya ke file **CSV** dan **TXT**.
+
+Tersedia dua cara pakai:
+- 🖥️ **Web** (`app.py`) — tampilan browser, pilih portal, lihat tabel, tombol Download CSV
+- ⌨️ **Terminal / CLI** (`main.py`) — tanya-jawab di terminal
+
+---
 
 ## 📋 Daftar Isi
-- [Fitur Utama](#fitur-utama)
-- [Portal Berita Terdukung](#portal-berita-terdukung)
-- [Persyaratan Sistem](#persyaratan-sistem)
-- [Instalasi](#instalasi)
-- [Cara Penggunaan](#cara-penggunaan)
-- [Struktur Data Output](#struktur-data-output)
-- [Konfigurasi](#konfigurasi)
-- [Troubleshooting](#troubleshooting)
-- [Lisensi](#lisensi)
+- [Portal yang Didukung](#-portal-yang-didukung)
+- [Persyaratan](#-persyaratan)
+- [Instalasi](#-instalasi)
+- [Cara Menjalankan](#-cara-menjalankan)
+  - [A. Tampilan Web](#a-tampilan-web-disarankan)
+  - [B. Tampilan Terminal](#b-tampilan-terminal-cli)
+- [Hasil / Output](#-hasil--output)
+- [Contoh Alur Lengkap](#-contoh-alur-lengkap)
+- [Troubleshooting](#-troubleshooting)
 
-## ✨ Fitur Utama
+---
 
-- **Multi-Platform Scraping**: Mengumpulkan artikel dari 7 portal berita online terkemuka secara bersamaan
-- **Filter Berdasarkan Keyword**: Cari artikel yang relevan dengan keyword tertentu
-- **Filter Berdasarkan Tanggal**: Tentukan rentang waktu untuk pencarian artikel
-- **Export CSV**: Simpan hasil scraping dalam format CSV untuk analisis lebih lanjut
-- **Error Handling**: Penanganan error yang robust untuk stabilitas aplikasi
-- **User-Agent Rotation**: Mencegah pemblokiran dengan menggunakan User-Agent yang tepat
-- **Retry Mechanism**: Retry otomatis untuk koneksi yang gagal
-- **Random Delay**: Jeda acak antar request untuk menghindari rate limiting
+## 📰 Portal yang Didukung
 
-## 📰 Portal Berita Terdukung
+| Portal | Metode | Keterangan |
+|--------|--------|------------|
+| Detik.com | 🟢 Statis | Cepat & andal, ada tanggal |
+| Kompas.com | 🟢 Statis | Cepat & andal, ada tanggal |
+| Viva.co.id | 🟢 Statis | Cepat & andal, ada tanggal |
+| AntaraNews.com | 🟢 Statis | Cepat & andal, ada tanggal |
+| CNNIndonesia.com | 🟠 Browser | Perlu Chrome + Selenium (render JavaScript), tanpa tanggal |
+| Liputan6.com | 🟠 Browser | Perlu Chrome + Selenium, hasil tergantung keyword |
+| Tempo.co | 🟠 Browser | Perlu Chrome + Selenium, kadang kosong (situs membatasi bot) |
 
-Aplikasi ini dapat mengekstrak artikel dari:
+> **🟢 Statis** = cepat, cukup koneksi internet.
+> **🟠 Browser** = perlu Google Chrome terpasang. Selenium mengunduh driver otomatis.
+> Jika Chrome/Selenium tidak ada, portal 🟠 dilewati otomatis **tanpa membuat aplikasi error**.
 
-1. **Detik.com** - Portal berita terlengkap Indonesia
-2. **Kompas.com** - Media online terkemuka
-3. **CNNIndonesia.com** - Berita utama nasional
-4. **Tempo.co** - Berita investigatif
-5. **Liputan6.com** - Berita terpercaya Indonesia
-6. **Viva.co.id** - Portal multimedia
-7. **AntaraNews.com** - Agensi berita resmi
+---
 
-## 🔧 Persyaratan Sistem
+## 🔧 Persyaratan
 
-- Python 3.8 atau lebih tinggi
-- pip (Python Package Manager)
-- Koneksi internet yang stabil
-- RAM minimal 2GB
+- Python 3.8+ (diuji di Python 3.12)
+- Koneksi internet
+- Google Chrome — **hanya** jika ingin memakai portal 🟠 (CNN, Liputan6, Tempo)
 
-### Dependencies
-
-```
-requests==2.31.0
-beautifulsoup4==4.12.0
-pandas==2.0.0
-selenium==4.10.0
-webdriver-manager==3.9.1
-urllib3==2.0.0
-```
+---
 
 ## 📦 Instalasi
 
-### 1. Clone Repository
+Jalankan sekali saja di folder proyek:
 
 ```bash
-git clone https://github.com/yourusername/scraper.berita.project.git
-cd scraper.berita.project-main
-```
+cd scraper.berita.project
 
-### 2. Buat Virtual Environment (Opsional tapi Disarankan)
-
-```bash
-# Untuk Linux/Mac
+# 1. Buat virtual environment
 python3 -m venv venv
-source venv/bin/activate
 
-# Untuk Windows
-python -m venv venv
-venv\Scripts\activate
-```
+# 2. Aktifkan virtual environment
+source venv/bin/activate        # Linux / macOS
+# venv\Scripts\activate         # Windows
 
-### 3. Install Dependencies
-
-```bash
+# 3. Install semua dependency
 pip install -r requirements.txt
 ```
 
-Atau install secara manual:
+Setelah aktif, prompt terminal akan diawali `(venv)`. Selama itu kamu cukup memakai
+perintah `python ...`. Jika **belum** mengaktifkan venv, ganti `python` menjadi
+`venv/bin/python`.
+
+---
+
+## 🚀 Cara Menjalankan
+
+### A. Tampilan Web (disarankan)
 
 ```bash
-pip install requests beautifulsoup4 pandas selenium webdriver-manager urllib3
+python app.py
 ```
 
-## 🚀 Cara Penggunaan
+Lalu buka di browser: **http://127.0.0.1:5050**
 
-### Cara Paling Mudah
+Langkah di halaman web:
+1. Isi **Keyword** (contoh: `teknologi`)
+2. Isi **Tanggal Mulai** dan **Tanggal Akhir**
+3. Atur **Maks. artikel / situs**
+4. Centang **portal** yang ingin di-scrape
+5. Klik **🔍 Mulai Scraping**
+6. Hasil muncul sebagai tabel → klik **⬇️ Download CSV**
 
-1. Jalankan script dengan command:
+> 💡 Di macOS port 5000 dipakai AirPlay, jadi aplikasi ini memakai port **5050**.
+> Ganti port dengan: `PORT=8000 python app.py`
+> Hentikan server dengan `Ctrl + C`.
+
+### B. Tampilan Terminal (CLI)
+
 ```bash
 python main.py
 ```
 
-2. Aplikasi akan meminta input:
-   - **Keyword**: Kata kunci berita yang ingin dicari (contoh: `teknologi`, `sosial media`, `kesehatan`)
-   - **Tanggal Mulai**: Format YYYY-MM-DD (contoh: `2024-01-01`)
-   - **Tanggal Akhir**: Format YYYY-MM-DD (contoh: `2024-12-31`)
-   - **Jumlah Maksimum Artikel**: Jumlah artikel per situs (default: 50, tekan Enter untuk skip)
-
-### Contoh Sesi Interaktif
+Aplikasi akan menanyakan 4 hal:
 
 ```
-Masukkan keyword (contoh: teknologi): artificial intelligence
-Masukkan tanggal mulai (YYYY-MM-DD): 2024-01-01
-Masukkan tanggal akhir (YYYY-MM-DD): 2024-12-31
-Masukkan jumlah maksimum artikel per situs (default 50): 100
+Masukkan keyword (contoh: teknologi): teknologi
+Masukkan tanggal mulai (YYYY-MM-DD): 2020-01-01
+Masukkan tanggal akhir (YYYY-MM-DD): 2026-12-31
+Masukkan jumlah maksimum artikel per situs (default 50): 5
 ```
 
-### Output
+**Tanpa mengetik manual** (langsung isi lewat pipe):
 
-Program akan menghasilkan:
-- File CSV dengan nama format: `scraped_media_<keyword>_YYYYMMDD_HHMMSS.csv`
-- File disimpan dalam folder: `scraped_media_data/`
-- Log output menampilkan progress scraping di terminal
+```bash
+printf 'teknologi\n2020-01-01\n2026-12-31\n5\n' | python main.py
+```
 
-## 📊 Struktur Data Output
+---
 
-File CSV yang dihasilkan memiliki kolom berikut:
+## 📊 Hasil / Output
 
-| Kolom | Tipe | Deskripsi |
-|-------|------|-----------|
-| `platform` | String | Nama portal berita (Detik.com, Kompas.com, dll) |
-| `date` | Date | Tanggal artikel dipublikasikan |
-| `title` | String | Judul artikel |
-| `url` | String | Link URL artikel lengkap |
-| `keyword` | String | Keyword yang digunakan untuk pencarian |
+Setiap kali dijalankan, aplikasi membuat **dua file** di dalam folder `scraped_media_data/`:
 
-### Contoh Data CSV
+| File | Isi | Kegunaan |
+|------|-----|----------|
+| `<keyword>_<tanggal>_<jam>.csv` | Data lengkap | Dibuka di Excel / Google Sheets / analisis data |
+| `<keyword>_<tanggal>_<jam>.txt` | Daftar judul bernomor | Dibaca cepat langsung |
+
+Contoh nama: `teknologi_20260725_111323.csv`
+
+**Kolom pada CSV:**
+
+| Kolom | Deskripsi |
+|-------|-----------|
+| `platform` | Nama portal (Detik.com, Kompas.com, dll) |
+| `date` | Tanggal artikel (`N/A` jika portal 🟠 tidak menyediakan tanggal) |
+| `title` | Judul artikel |
+| `url` | Link artikel |
+| `keyword` | Keyword yang dicari |
+
+**Contoh isi CSV:**
 
 ```csv
 platform,date,title,url,keyword
-Detik.com,2024-06-15,Perkembangan AI Terbaru di Industri Tech,https://www.detik.com/...,artificial intelligence
-Kompas.com,2024-06-14,ChatGPT Mendapat Update Baru,https://www.kompas.com/...,artificial intelligence
-CNNIndonesia.com,2024-06-13,Regulasi AI di Indonesia,https://www.cnnindonesia.com/...,artificial intelligence
+Detik.com,2026-07-24,"Lima Teknologi Kereta di RI, Ada Whoosh 350 Km/Jam",https://finance.detik.com/...,teknologi
+Kompas.com,2026-07-18,Lamborghini Sebut Teknologi EV Belum Matang,https://otomotif.kompas.com/...,teknologi
+Viva.co.id,2026-07-25,Yamaha Siapkan Motor Listrik Baru Pakai Teknologi Baru,https://www.viva.co.id/...,teknologi
 ```
 
-## ⚙️ Konfigurasi
+---
 
-### Mengubah User-Agent
+## 🧪 Contoh Alur Lengkap
 
-Untuk mengganti User-Agent, edit bagian di `OnlineMediaScraper.__init__()`:
+Dari nol sampai dapat CSV, lewat terminal:
 
-```python
-self.headers = {
-    'User-Agent': 'Ganti dengan User-Agent yang diinginkan',
-    'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8',
-    'Accept-Language': 'en-US,en;q=0.5'
-}
+```bash
+# 1. Masuk folder & aktifkan venv
+cd scraper.berita.project
+source venv/bin/activate
+
+# 2. Jalankan scraper (keyword "teknologi", 5 artikel/situs)
+printf 'teknologi\n2020-01-01\n2026-12-31\n5\n' | python main.py
+
+# 3. Lihat file CSV yang dihasilkan
+ls scraped_media_data/
+
+# 4. Buka isinya (macOS)
+open scraped_media_data/*.csv
 ```
 
-### Mengubah Timeout
-
-Default timeout adalah 10-15 detik. Untuk mengubahnya, ubah parameter `timeout` di setiap method `requests.get()`.
-
-### Mengubah Delay Antar Request
-
-Delay default adalah 1-3 detik secara random. Untuk mengubahnya:
-
-```python
-time.sleep(random.uniform(2, 5))  # Ubah 2 dan 5 sesuai kebutuhan
-```
+---
 
 ## 🐛 Troubleshooting
 
-### 1. "ModuleNotFoundError: No module named 'requests'"
-**Solusi**: Install dependencies dengan `pip install -r requirements.txt`
+| Masalah | Solusi |
+|---------|--------|
+| `ModuleNotFoundError: No module named 'flask'` / `requests` | Belum install / venv belum aktif. Jalankan `pip install -r requirements.txt` |
+| `Port 5050 is in use` | Ganti port: `PORT=8000 python app.py` |
+| Portal 🟠 (CNN/Liputan6/Tempo) hasilnya 0 | Chrome belum terpasang, atau situs membatasi bot. Portal 🟢 tetap jalan. |
+| CSV hanya berisi `No articles found` | Tidak ada artikel cocok. Coba keyword lebih umum atau perlebar rentang tanggal. |
+| Tanggal artikel tampil `N/A` | Wajar untuk portal 🟠 — tanggal tidak tersedia dari hasil render. |
+| Kolom `title` ada koma tapi CSV tetap rapi | Aman — judul otomatis dibungkus tanda kutip sesuai standar CSV. |
 
-### 2. "Tidak ada artikel yang ditemukan"
-**Kemungkinan Penyebab**:
-- Website portal berita telah mengubah struktur HTML
-- Keyword terlalu spesifik atau tidak relevan
-- Tanggal yang dicari tidak memiliki artikel
-- IP Anda diblokir oleh website
-
-**Solusi**:
-- Coba keyword yang lebih umum
-- Periksa apakah website dapat diakses di browser
-- Tunggu beberapa jam sebelum mencoba lagi
-- Gunakan VPN jika diperlukan
-
-### 3. "ConnectionError: Max retries exceeded"
-**Solusi**:
-- Periksa koneksi internet
-- Tunggu beberapa detik dan coba lagi
-- Website mungkin sedang down, coba nanti
-
-### 4. "TimeoutError"
-**Solusi**:
-- Naikkan nilai timeout di parameter `timeout=15` menjadi lebih besar
-- Periksa kecepatan koneksi internet
-
-### 5. File CSV kosong atau hanya placeholder
-**Penyebab**: Website telah memblokir atau mengubah struktur HTML mereka
-**Solusi**:
-- Update class selectors di method scraping
-- Cek HTML structure website menggunakan browser developer tools
-- Hubungi maintainer untuk update
-
-## 📝 Catatan Penting
-
-- **Robots.txt Compliance**: Pastikan scraping tidak melanggar robots.txt dari masing-masing website
-- **Rate Limiting**: Aplikasi sudah dilengkapi delay untuk menghindari rate limiting
-- **Terms of Service**: Periksa Terms of Service masing-masing website
-- **Penggunaan Etis**: Gunakan data hanya untuk keperluan yang sah dan etis
-- **Data Privacy**: Jaga privasi dan jangan publikasikan data pribadi
-
-## 🤝 Kontribusi
-
-Kontribusi sangat diterima! Silakan:
-
-1. Fork repository ini
-2. Buat branch fitur (`git checkout -b feature/AmazingFeature`)
-3. Commit perubahan (`git commit -m 'Add some AmazingFeature'`)
-4. Push ke branch (`git push origin feature/AmazingFeature`)
-5. Buka Pull Request
-
-## ⚖️ Lisensi
-
-Proyek ini dilisensikan di bawah MIT License - lihat file LICENSE untuk detail.
-
-## 📧 Kontak & Support
-
-Jika Anda memiliki pertanyaan atau menemukan bug:
-- Buka issue di GitHub
-- Hubungi melalui email di: your-email@example.com
-
-## 🔍 Changelog
-
-### v1.0.0 (2024)
-- Release awal
-- Support 7 portal berita online
-- Export CSV functionality
-- Multi-threaded scraping capability
+---
 
 ## ⚠️ Disclaimer
 
-Aplikasi ini dibuat hanya untuk tujuan pendidikan dan penelitian. Pengguna bertanggung jawab atas penggunaan aplikasi ini sesuai dengan hukum dan regulasi yang berlaku di yurisdiksi mereka.
+Aplikasi ini dibuat untuk tujuan **pendidikan dan penelitian**. Gunakan secara etis,
+patuhi Terms of Service dan robots.txt masing-masing situs, serta jangan membebani
+server portal berita secara berlebihan.

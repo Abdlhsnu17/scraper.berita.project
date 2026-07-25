@@ -1,0 +1,5 @@
+__pycache__/
+*.pyc
+venv/
+.venv/
+scraped_media_data/
